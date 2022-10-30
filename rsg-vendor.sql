@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS `market_items` (
 DROP TABLE IF EXISTS `market_owner`;
 CREATE TABLE IF NOT EXISTS `market_owner` (
   `marketid` varchar(255) NOT NULL,
-  `cid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
+  `citizenid` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL,
   `displayname` varchar(255) NOT NULL,
   `owned` int(3) NOT NULL DEFAULT '0',
   `money` int(25) NOT NULL DEFAULT '0',
