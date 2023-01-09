@@ -590,11 +590,11 @@ end)
 
 
 Citizen.CreateThread(function()
-	for z, x in pairs(Config.Market) do
+    for z, x in pairs(Config.Market) do
         local blip = N_0x554d9d53f696d002(1664425300, Config.Market[z].coords)
         SetBlipSprite(blip, Config.MarketShop, 1)
-		SetBlipScale(blip, 0.025)
-		Citizen.InvokeNative(0x9CB1A1623062F402, blip, Lang:t('other.blips'))
+        SetBlipScale(blip, 0.025)
+        Citizen.InvokeNative(0x9CB1A1623062F402, blip, Lang:t('other.blips'))
     end  
 end)
 
@@ -610,7 +610,7 @@ CreateThread(function()
             type = 'client',
             event = 'rsg-vendor:client:vendorMenuPrompt'
         })
-	end
+    end
 end)
 
 RegisterNetEvent('rsg-vendor:client:vendorMenuPrompt', function()

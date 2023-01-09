@@ -18,7 +18,7 @@ end)
 RSGCore.Functions.CreateCallback('rsg-vendor:server:vendor', function(source, cb)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
-	local Playercid = Player.PlayerData.citizenid
+    local Playercid = Player.PlayerData.citizenid
 
     exports.oxmysql:execute('SELECT * FROM market_owner', {}, function(result)
         if result[1] then
@@ -32,7 +32,7 @@ end)
 RSGCore.Functions.CreateCallback('rsg-vendor:server:vendorOwned', function(source, cb, currentvendor)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
-	local Playercid = Player.PlayerData.citizenid
+    local Playercid = Player.PlayerData.citizenid
 
     exports.oxmysql:execute('SELECT * FROM market_owner WHERE marketid = ? AND owned = 1 ', {currentvendor}, function(result)
         if result[1] then
@@ -47,7 +47,7 @@ end)
 RSGCore.Functions.CreateCallback('rsg-vendor:server:vendorOwner', function(source, cb, currentvendor)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
-	local Playercid = Player.PlayerData.citizenid
+    local Playercid = Player.PlayerData.citizenid
 
     exports.oxmysql:execute('SELECT * FROM market_owner WHERE marketid = ? AND owned = 1 AND citizenid = ? ', {currentvendor, Playercid}, function(result2)
         if result2[1] then
@@ -72,7 +72,7 @@ end)
 RSGCore.Functions.CreateCallback('rsg-vendor:server:vendorGetMoney', function(source, cb, currentvendor)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
-	local Playercid = Player.PlayerData.citizenid
+    local Playercid = Player.PlayerData.citizenid
 
     exports.oxmysql:execute('SELECT * FROM market_owner WHERE marketid = ? AND owned = 1 AND citizenid = ? ', {currentvendor, Playercid}, function(checkmoney)
         if checkmoney[1] then
@@ -94,7 +94,7 @@ AddEventHandler("rsg-vendor:server:vendorGetShopItems", function(shopName)
         exports['oxmysql']:execute('SELECT * FROM market_owner WHERE marketid = ?', {shopName}, function(data2)
             TriggerClientEvent("Stores:ReturnStoreItems", _source, data, data2)
         end)
-	end)
+    end)
 end)
 
 
@@ -102,7 +102,7 @@ RegisterServerEvent("rsg-vendor:server:vendorPurchaseItem")
 AddEventHandler("rsg-vendor:server:vendorPurchaseItem", function(location, item, amount)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
-	local Playercid = Player.PlayerData.citizenid
+    local Playercid = Player.PlayerData.citizenid
     
     exports.oxmysql:execute('SELECT * FROM market_items WHERE marketid = ? AND items = ?',{location, item} , function(data)
         local stock = data[1].stock - amount
@@ -132,7 +132,7 @@ RegisterServerEvent("rsg-vendor:server:vendorInvReFill")
 AddEventHandler("rsg-vendor:server:vendorInvReFill", function(location, item, qt, amount)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
-	local Playercid = Player.PlayerData.citizenid
+    local Playercid = Player.PlayerData.citizenid
     local itemv = item.name
     
     exports.oxmysql:execute('SELECT * FROM market_items WHERE marketid = ? AND items = ?',{location, itemv} , function(result)
@@ -157,7 +157,7 @@ RegisterServerEvent("rsg-vendor:server:vendorWithdraw")
 AddEventHandler("rsg-vendor:server:vendorWithdraw", function(location, omoney)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
-	local Playercid = Player.PlayerData.citizenid
+    local Playercid = Player.PlayerData.citizenid
     
     exports.oxmysql:execute('SELECT * FROM market_owner WHERE marketid= ? AND citizenid= ?',{location, Playercid} , function(result)
         if result[1] ~= nil then
@@ -177,7 +177,7 @@ RegisterServerEvent("rsg-vendor:server:vendorBuyEtal")
 AddEventHandler("rsg-vendor:server:vendorBuyEtal", function(location, price)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
-	local Playercid = Player.PlayerData.citizenid
+    local Playercid = Player.PlayerData.citizenid
     
     exports.oxmysql:execute('SELECT * FROM market_owner WHERE marketid = ? AND owned = 0',{location} , function(result)
         if result[1] ~= nil then
@@ -198,7 +198,7 @@ RegisterServerEvent("rsg-vendor:server:vendorGiveBusiness")
 AddEventHandler("rsg-vendor:server:vendorGiveBusiness", function(location, tocid)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
-	local Playercid = Player.PlayerData.citizenid
+    local Playercid = Player.PlayerData.citizenid
     
     exports.oxmysql:execute('SELECT * FROM players WHERE citizenid = ?',{tocid} , function(result)
         if result[1] ~= nil then
@@ -223,14 +223,14 @@ AddEventHandler("rsg-vendor:server:vendorGetName", function(shopName)
     local _source = source
     exports['oxmysql']:execute('SELECT * FROM market_items WHERE marketid = ?', {shopName}, function(data)
         TriggerClientEvent("Stores:ReturnStoreItems", _source, data)
-	end)
+    end)
 end)
 
 RegisterServerEvent("rsg-vendor:server:vendorName")
 AddEventHandler("rsg-vendor:server:vendorName", function(location, name)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
-	local Playercid = Player.PlayerData.citizenid
+    local Playercid = Player.PlayerData.citizenid
     
     exports.oxmysql:execute('SELECT * FROM market_owner WHERE marketid = ? AND citizenid = ?',{location, Playercid} , function(result)
         if result[1] ~= nil then
@@ -252,7 +252,7 @@ RegisterServerEvent("rsg-vendor:server:vendorRob")
 AddEventHandler("rsg-vendor:server:vendorRob", function(location)
     local src = source
     local Player = RSGCore.Functions.GetPlayer(src)
-	local Playercid = Player.PlayerData.citizenid
+    local Playercid = Player.PlayerData.citizenid
     
     exports.oxmysql:execute('SELECT * FROM market_owner WHERE marketid = ?',{location} , function(result)
         --print(result[1])

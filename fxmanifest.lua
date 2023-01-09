@@ -6,9 +6,9 @@ author 'Kz#5669 and RexShack#3041'
 description 'rsg-vendor'
 
 shared_scripts {
-	'@rsg-core/shared/locale.lua',
+    '@rsg-core/shared/locale.lua',
     'locale/lang.lua',
-	'config.lua'
+    'config.lua'
 }
 client_scripts {
     'client/*.lua'
@@ -19,10 +19,10 @@ server_scripts {
 }
 
 dependencies {
-	'rsg-core',
-	'rsg-menu',
-	'rsg-input',
-	'rsg-inventory'
+    'rsg-core',
+    'rsg-menu',
+    'rsg-input',
+    'rsg-inventory'
 }
 
 lua54 'yes'
