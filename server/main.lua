@@ -1,4 +1,4 @@
-local QRCore = exports['qr-core']:GetCoreObject()
+local RSGCore = exports['rsg-core']:GetCoreObject()
 
 AddEventHandler('onResourceStart', function(resource)
     if resource == GetCurrentResourceName() then
@@ -15,9 +15,9 @@ end)
 -------------------------------------------------------------------------------------------
 
 
-QRCore.Functions.CreateCallback('rsg-vendor:server:vendor', function(source, cb)
+RSGCore.Functions.CreateCallback('rsg-vendor:server:vendor', function(source, cb)
     local src = source
-    local Player = QRCore.Functions.GetPlayer(src)
+    local Player = RSGCore.Functions.GetPlayer(src)
 	local Playercid = Player.PlayerData.citizenid
 
     exports.oxmysql:execute('SELECT * FROM market_owner', {}, function(result)
@@ -29,9 +29,9 @@ QRCore.Functions.CreateCallback('rsg-vendor:server:vendor', function(source, cb)
     end)
 end)
 
-QRCore.Functions.CreateCallback('rsg-vendor:server:vendorOwned', function(source, cb, currentvendor)
+RSGCore.Functions.CreateCallback('rsg-vendor:server:vendorOwned', function(source, cb, currentvendor)
     local src = source
-    local Player = QRCore.Functions.GetPlayer(src)
+    local Player = RSGCore.Functions.GetPlayer(src)
 	local Playercid = Player.PlayerData.citizenid
 
     exports.oxmysql:execute('SELECT * FROM market_owner WHERE marketid = ? AND owned = 1 ', {currentvendor}, function(result)
@@ -44,9 +44,9 @@ QRCore.Functions.CreateCallback('rsg-vendor:server:vendorOwned', function(source
 end)
 
 
-QRCore.Functions.CreateCallback('rsg-vendor:server:vendorOwner', function(source, cb, currentvendor)
+RSGCore.Functions.CreateCallback('rsg-vendor:server:vendorOwner', function(source, cb, currentvendor)
     local src = source
-    local Player = QRCore.Functions.GetPlayer(src)
+    local Player = RSGCore.Functions.GetPlayer(src)
 	local Playercid = Player.PlayerData.citizenid
 
     exports.oxmysql:execute('SELECT * FROM market_owner WHERE marketid = ? AND owned = 1 AND citizenid = ? ', {currentvendor, Playercid}, function(result2)
@@ -58,7 +58,7 @@ QRCore.Functions.CreateCallback('rsg-vendor:server:vendorOwner', function(source
     end)
 end)
 
-QRCore.Functions.CreateCallback('rsg-vendor:server:vendorS', function(source, cb, currentvendor)
+RSGCore.Functions.CreateCallback('rsg-vendor:server:vendorS', function(source, cb, currentvendor)
     exports.oxmysql:execute('SELECT * FROM market_owner WHERE marketid = ?', {currentvendor}, function(result)
         if result[1] then
             cb(result)
@@ -69,9 +69,9 @@ QRCore.Functions.CreateCallback('rsg-vendor:server:vendorS', function(source, cb
 end)
 
 
-QRCore.Functions.CreateCallback('rsg-vendor:server:vendorGetMoney', function(source, cb, currentvendor)
+RSGCore.Functions.CreateCallback('rsg-vendor:server:vendorGetMoney', function(source, cb, currentvendor)
     local src = source
-    local Player = QRCore.Functions.GetPlayer(src)
+    local Player = RSGCore.Functions.GetPlayer(src)
 	local Playercid = Player.PlayerData.citizenid
 
     exports.oxmysql:execute('SELECT * FROM market_owner WHERE marketid = ? AND owned = 1 AND citizenid = ? ', {currentvendor, Playercid}, function(checkmoney)
@@ -101,7 +101,7 @@ end)
 RegisterServerEvent("rsg-vendor:server:vendorPurchaseItem")
 AddEventHandler("rsg-vendor:server:vendorPurchaseItem", function(location, item, amount)
     local src = source
-    local Player = QRCore.Functions.GetPlayer(src)
+    local Player = RSGCore.Functions.GetPlayer(src)
 	local Playercid = Player.PlayerData.citizenid
     
     exports.oxmysql:execute('SELECT * FROM market_items WHERE marketid = ? AND items = ?',{location, item} , function(data)
@@ -113,16 +113,16 @@ AddEventHandler("rsg-vendor:server:vendorPurchaseItem", function(location, item,
                 if count > 0 then
                     Player.Functions.RemoveMoney("cash", price, "market")
                     Player.Functions.AddItem(item, amount)
-                    TriggerClientEvent('inventory:client:ItemBox', src, QRCore.Shared.Items[item], "add")
+                    TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[item], "add")
                     MySQL.Async.fetchAll("SELECT * FROM market_owner WHERE marketid=@location", { ['@location'] = location }, function(data2)
                         local moneymarket = data2[1].money + price
                         exports.oxmysql:execute('UPDATE market_owner SET money = ? WHERE marketid = ?',{moneymarket, location})
                     end)
-                    TriggerClientEvent('QRCore:Notify', src, Lang:t('success.buy_prod').." "..amount.."x "..QRCore.Shared.Items[item].label, 'success')
+                    TriggerClientEvent('RSGCore:Notify', src, Lang:t('success.buy_prod').." "..amount.."x "..RSGCore.Shared.Items[item].label, 'success')
                 end
             end)
         else 
-            TriggerClientEvent('QRCore:Notify', src, Lang:t('error.player_no_money'), 'error')
+            TriggerClientEvent('RSGCore:Notify', src, Lang:t('error.player_no_money'), 'error')
         end
     end)
 end)
@@ -131,7 +131,7 @@ end)
 RegisterServerEvent("rsg-vendor:server:vendorInvReFill")
 AddEventHandler("rsg-vendor:server:vendorInvReFill", function(location, item, qt, amount)
     local src = source
-    local Player = QRCore.Functions.GetPlayer(src)
+    local Player = RSGCore.Functions.GetPlayer(src)
 	local Playercid = Player.PlayerData.citizenid
     local itemv = item.name
     
@@ -141,14 +141,14 @@ AddEventHandler("rsg-vendor:server:vendorInvReFill", function(location, item, qt
             --print(stockv)
             exports.oxmysql:execute('UPDATE market_items SET stock = ?, price = ? WHERE marketid = ? AND items = ?',{stockv, amount, location, itemv})
             Player.Functions.RemoveItem(itemv, qt)
-            TriggerClientEvent('inventory:client:ItemBox', src, QRCore.Shared.Items[itemv], "remove")
+            TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[itemv], "remove")
         else
             local price = amount
             exports.oxmysql:execute('INSERT INTO market_items (`marketid`, `items`, `stock`, `price`) VALUES (?, ?, ?, ?);',{location, itemv, qt, price})
             Player.Functions.RemoveItem(itemv, qt)
-            TriggerClientEvent('inventory:client:ItemBox', src, QRCore.Shared.Items[itemv], "remove")
+            TriggerClientEvent('inventory:client:ItemBox', src, RSGCore.Shared.Items[itemv], "remove")
         end
-        TriggerClientEvent('QRCore:Notify', src, Lang:t('success.refill').." " ..qt.. "x " ..item.label, 'success')
+        TriggerClientEvent('RSGCore:Notify', src, Lang:t('success.refill').." " ..qt.. "x " ..item.label, 'success')
     end)
 end)
 
@@ -156,7 +156,7 @@ end)
 RegisterServerEvent("rsg-vendor:server:vendorWithdraw")
 AddEventHandler("rsg-vendor:server:vendorWithdraw", function(location, omoney)
     local src = source
-    local Player = QRCore.Functions.GetPlayer(src)
+    local Player = RSGCore.Functions.GetPlayer(src)
 	local Playercid = Player.PlayerData.citizenid
     
     exports.oxmysql:execute('SELECT * FROM market_owner WHERE marketid= ? AND citizenid= ?',{location, Playercid} , function(result)
@@ -176,17 +176,17 @@ end)
 RegisterServerEvent("rsg-vendor:server:vendorBuyEtal")
 AddEventHandler("rsg-vendor:server:vendorBuyEtal", function(location, price)
     local src = source
-    local Player = QRCore.Functions.GetPlayer(src)
+    local Player = RSGCore.Functions.GetPlayer(src)
 	local Playercid = Player.PlayerData.citizenid
     
     exports.oxmysql:execute('SELECT * FROM market_owner WHERE marketid = ? AND owned = 0',{location} , function(result)
         if result[1] ~= nil then
             if Player.Functions.RemoveMoney("cash", price, "etal-bought") then
                 exports.oxmysql:execute('UPDATE market_owner SET owned = ?, citizenid = ? WHERE marketid = ?',{1, Playercid, location})
-                TriggerClientEvent('QRCore:Notify', src, Lang:t('success.buy_t'), 'success')
-                TriggerEvent('qr-log:server:CreateLog', 'shops', 'Market Stall', 'green', "**"..GetPlayerName(Player.PlayerData.source) .. " (citizenid: "..Player.PlayerData.citizenid.." | id: "..Player.PlayerData.source..")** bought a stall $"..price..".")
+                TriggerClientEvent('RSGCore:Notify', src, Lang:t('success.buy_t'), 'success')
+                TriggerEvent('rsg-log:server:CreateLog', 'shops', 'Market Stall', 'green', "**"..GetPlayerName(Player.PlayerData.source) .. " (citizenid: "..Player.PlayerData.citizenid.." | id: "..Player.PlayerData.source..")** bought a stall $"..price..".")
             else
-                TriggerClientEvent('QRCore:Notify', src, Lang:t('error.player_no_money'), 'error')
+                TriggerClientEvent('RSGCore:Notify', src, Lang:t('error.player_no_money'), 'error')
                 return
             end
         end
@@ -197,7 +197,7 @@ end)
 RegisterServerEvent("rsg-vendor:server:vendorGiveBusiness")
 AddEventHandler("rsg-vendor:server:vendorGiveBusiness", function(location, tocid)
     local src = source
-    local Player = QRCore.Functions.GetPlayer(src)
+    local Player = RSGCore.Functions.GetPlayer(src)
 	local Playercid = Player.PlayerData.citizenid
     
     exports.oxmysql:execute('SELECT * FROM players WHERE citizenid = ?',{tocid} , function(result)
@@ -205,14 +205,14 @@ AddEventHandler("rsg-vendor:server:vendorGiveBusiness", function(location, tocid
             MySQL.Async.fetchAll("SELECT * FROM market_owner WHERE citizenid=@citizenid AND owned=1 AND marketid=@marketid", { ['@marketid'] = location, ['@citizenid'] = Playercid }, function(result2)
                 if result2[1] ~= nil then
                     exports.oxmysql:execute('UPDATE market_owner SET citizenid = ? WHERE marketid = ?',{tocid, location})
-                    TriggerClientEvent('QRCore:Notify', src, Lang:t('success.transfert_t'), 'success')
+                    TriggerClientEvent('RSGCore:Notify', src, Lang:t('success.transfert_t'), 'success')
                 else
-                    TriggerClientEvent('QRCore:Notify', src, Lang:t('error.error'), 'error')
+                    TriggerClientEvent('RSGCore:Notify', src, Lang:t('error.error'), 'error')
                     return
                 end
             end)
         else
-            TriggerClientEvent('QRCore:Notify', src, Lang:t('error.error_cid'), 'error')
+            TriggerClientEvent('RSGCore:Notify', src, Lang:t('error.error_cid'), 'error')
             return
         end
     end)
@@ -229,15 +229,15 @@ end)
 RegisterServerEvent("rsg-vendor:server:vendorName")
 AddEventHandler("rsg-vendor:server:vendorName", function(location, name)
     local src = source
-    local Player = QRCore.Functions.GetPlayer(src)
+    local Player = RSGCore.Functions.GetPlayer(src)
 	local Playercid = Player.PlayerData.citizenid
     
     exports.oxmysql:execute('SELECT * FROM market_owner WHERE marketid = ? AND citizenid = ?',{location, Playercid} , function(result)
         if result[1] ~= nil then
             exports.oxmysql:execute('UPDATE market_owner SET displayname = ? WHERE marketid = ?',{name, location})
-            TriggerClientEvent('QRCore:Notify', src, Lang:t('success.newname'), 'success')
+            TriggerClientEvent('RSGCore:Notify', src, Lang:t('success.newname'), 'success')
         else
-            TriggerClientEvent('QRCore:Notify', src, Lang:t('error.error'), 'error')
+            TriggerClientEvent('RSGCore:Notify', src, Lang:t('error.error'), 'error')
             return
         end
     end)
@@ -251,7 +251,7 @@ end)
 RegisterServerEvent("rsg-vendor:server:vendorRob")
 AddEventHandler("rsg-vendor:server:vendorRob", function(location)
     local src = source
-    local Player = QRCore.Functions.GetPlayer(src)
+    local Player = RSGCore.Functions.GetPlayer(src)
 	local Playercid = Player.PlayerData.citizenid
     
     exports.oxmysql:execute('SELECT * FROM market_owner WHERE marketid = ?',{location} , function(result)
@@ -262,9 +262,9 @@ AddEventHandler("rsg-vendor:server:vendorRob", function(location)
             local rpmoney = result[1].money / Config.Percent
             exports.oxmysql:execute('UPDATE market_owner SET money = ?, robbery = ? WHERE marketid = ?',{rmoney, 1, location})
             Player.Functions.AddMoney("cash", rpmoney, "robbery")
-            TriggerClientEvent('QRCore:Notify', src, Lang:t('success.robreward')..rpmoney, 'success')
+            TriggerClientEvent('RSGCore:Notify', src, Lang:t('success.robreward')..rpmoney, 'success')
         else
-            TriggerClientEvent('QRCore:Notify', src, Lang:t('error.market_no_money'), 'error')
+            TriggerClientEvent('RSGCore:Notify', src, Lang:t('error.market_no_money'), 'error')
             return
         end
     end)

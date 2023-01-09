@@ -1,4 +1,4 @@
-local QRCore = exports['qr-core']:GetCoreObject()
+local RSGCore = exports['rsg-core']:GetCoreObject()
 local currentvendor = nil
 
 -------------------------------------------------------------------------------------------
@@ -6,7 +6,7 @@ local currentvendor = nil
 -------------------------------------------------------------------------------------------
 
 local function ClearMenu()
-	exports['qr-menu']:closeMenu()
+	exports['rsg-menu']:closeMenu()
 end
 
 local function closeMenuFull()
@@ -25,7 +25,7 @@ end)
 
 RegisterNetEvent("rsg-vendor:client:vendorMenu", function()
     --print(currentvendor)
-    QRCore.Functions.TriggerCallback('rsg-vendor:server:vendorOwned', function(result)
+    RSGCore.Functions.TriggerCallback('rsg-vendor:server:vendorOwned', function(result)
         if result == nil then
             --print(currentvendor)
             local vendorMenuFirst = {
@@ -50,9 +50,9 @@ RegisterNetEvent("rsg-vendor:client:vendorMenu", function()
                     event = "rsg-vendor:client:closemenu",
                 }
             }
-            exports['qr-menu']:openMenu(vendorMenuFirst)
+            exports['rsg-menu']:openMenu(vendorMenuFirst)
         else
-            QRCore.Functions.TriggerCallback('rsg-vendor:server:vendorOwner', function(result2)
+            RSGCore.Functions.TriggerCallback('rsg-vendor:server:vendorOwner', function(result2)
                 if result2 == nil then
                     local vendorMenuFirst = {
                         {
@@ -86,7 +86,7 @@ RegisterNetEvent("rsg-vendor:client:vendorMenu", function()
                             event = "rsg-vendor:client:closemenu",
                         }
                     }
-                    exports['qr-menu']:openMenu(vendorMenuFirst)
+                    exports['rsg-menu']:openMenu(vendorMenuFirst)
                 else
                     local vendorMenuFirst = {
                         {
@@ -137,7 +137,7 @@ RegisterNetEvent("rsg-vendor:client:vendorMenu", function()
                             event = "rsg-vendor:client:closemenu",
                         }
                     }
-                    exports['qr-menu']:openMenu(vendorMenuFirst)
+                    exports['rsg-menu']:openMenu(vendorMenuFirst)
                 end
             end, currentvendor)
         end
@@ -146,7 +146,7 @@ end)
 
 
 RegisterNetEvent("rsg-vendor:client:vendorInv", function(store_inventory, data)
-    QRCore.Functions.TriggerCallback('rsg-vendor:server:vendorS', function(result)
+    RSGCore.Functions.TriggerCallback('rsg-vendor:server:vendorS', function(result)
         local vendorMenuItem = {
             {
                 header = "| "..Lang:t('menu.market').." : "..result[1].displayname.." |",
@@ -157,7 +157,7 @@ RegisterNetEvent("rsg-vendor:client:vendorInv", function(store_inventory, data)
         for k, v in pairs(store_inventory) do
             if store_inventory[k].stock > 0 then
             vendorMenuItem[#vendorMenuItem+1] = {
-                header = "<img src=nui://qr-inventory/html/images/"..QRCore.Shared.Items[store_inventory[k].items].image.." width=20px> ‎ ‎ "..QRCore.Shared.Items[store_inventory[k].items].label,
+                header = "<img src=nui://rsg-inventory/html/images/"..RSGCore.Shared.Items[store_inventory[k].items].image.." width=20px> ‎ ‎ "..RSGCore.Shared.Items[store_inventory[k].items].label,
                 txt = Lang:t('menu.instock')..": "..store_inventory[k].stock.." | "..Lang:t('menu.price')..": $"..store_inventory[k].price,
                 params = {
                     event = "rsg-vendor:client:vendorInvInput",
@@ -174,14 +174,14 @@ RegisterNetEvent("rsg-vendor:client:vendorInv", function(store_inventory, data)
                 event = "rsg-vendor:client:vendorMenu",
             }
         }
-        exports['qr-menu']:openMenu(vendorMenuItem)
+        exports['rsg-menu']:openMenu(vendorMenuItem)
     end, currentvendor)
 end)
 
 
 RegisterNetEvent("rsg-vendor:client:vendorInvReFull", function()
-    QRCore.Functions.GetPlayerData(function(PlayerData)
-        QRCore.Functions.TriggerCallback('rsg-vendor:server:vendorS', function(result)
+    RSGCore.Functions.GetPlayerData(function(PlayerData)
+        RSGCore.Functions.TriggerCallback('rsg-vendor:server:vendorS', function(result)
             if PlayerData.items == nil then 
                 local vendorMenuNoInvItem = {
                     {
@@ -202,7 +202,7 @@ RegisterNetEvent("rsg-vendor:client:vendorInvReFull", function()
                         event = "rsg-vendor:client:vendorMenu",
                     }
                 }
-                exports['qr-menu']:openMenu(vendorMenuNoInvItem)
+                exports['rsg-menu']:openMenu(vendorMenuNoInvItem)
             else
                 local vendorMenuInvItem = {
                     {
@@ -215,7 +215,7 @@ RegisterNetEvent("rsg-vendor:client:vendorInvReFull", function()
                 --print(PlayerData.items[k].name.." "..PlayerData.items[k].amount)
                     if PlayerData.items[k].amount > 0 and PlayerData.items[k].type == "item" then
                     vendorMenuInvItem[#vendorMenuInvItem+1] = {
-                        header = "<img src=nui://qr-inventory/html/images/"..PlayerData.items[k].image.." width=20px> ‎ ‎ "..PlayerData.items[k].label,
+                        header = "<img src=nui://rsg-inventory/html/images/"..PlayerData.items[k].image.." width=20px> ‎ ‎ "..PlayerData.items[k].label,
                         txt = Lang:t('menu.in_inv').." : "..PlayerData.items[k].amount,
                         params = {
                             event = "rsg-vendor:client:vendorInvReFillInput",
@@ -232,7 +232,7 @@ RegisterNetEvent("rsg-vendor:client:vendorInvReFull", function()
                         event = "rsg-vendor:client:vendorMenu",
                     }
                 }
-                exports['qr-menu']:openMenu(vendorMenuInvItem)
+                exports['rsg-menu']:openMenu(vendorMenuInvItem)
             end
         end, currentvendor)
     end)
@@ -241,8 +241,8 @@ end)
 
 RegisterNetEvent("rsg-vendor:client:vendorCheckMoney", function()
     --print(1)
-    QRCore.Functions.TriggerCallback('rsg-vendor:server:vendorGetMoney', function(checkmoney)
-        QRCore.Functions.TriggerCallback('rsg-vendor:server:vendorS', function(result)
+    RSGCore.Functions.TriggerCallback('rsg-vendor:server:vendorGetMoney', function(checkmoney)
+        RSGCore.Functions.TriggerCallback('rsg-vendor:server:vendorS', function(result)
             --print(checkmoney)
             local vendorMenuMoney = {
                 {
@@ -271,7 +271,7 @@ RegisterNetEvent("rsg-vendor:client:vendorCheckMoney", function()
                     event = "rsg-vendor:client:vendorMenu",
                 }
             }
-            exports['qr-menu']:openMenu(vendorMenuMoney)
+            exports['rsg-menu']:openMenu(vendorMenuMoney)
         end, currentvendor)
     end, currentvendor)
 end)
@@ -279,7 +279,7 @@ end)
 
 RegisterNetEvent("rsg-vendor:client:vendorAchat", function(currentvendor)
     price = Config.Market[currentvendor].price
-    QRCore.Functions.TriggerCallback('rsg-vendor:server:vendorS', function(result)
+    RSGCore.Functions.TriggerCallback('rsg-vendor:server:vendorS', function(result)
         local vendorAchat = {
             {
                 header = "| "..Lang:t('menu.market').." : " ..result[1].displayname.." |",
@@ -302,13 +302,13 @@ RegisterNetEvent("rsg-vendor:client:vendorAchat", function(currentvendor)
                 event = "rsg-vendor:client:closemenu",
             }
         }
-        exports['qr-menu']:openMenu(vendorAchat)
+        exports['rsg-menu']:openMenu(vendorAchat)
     end, currentvendor)
 end)
 
 
 RegisterNetEvent("rsg-vendor:client:vendorSettings", function()
-    QRCore.Functions.TriggerCallback('rsg-vendor:server:vendorS', function(result)
+    RSGCore.Functions.TriggerCallback('rsg-vendor:server:vendorS', function(result)
         local vendorSettings = {
             {
                 header = "| "..Lang:t('menu.market').." : " ..result[1].displayname.." |",
@@ -339,7 +339,7 @@ RegisterNetEvent("rsg-vendor:client:vendorSettings", function()
                 event = "rsg-vendor:client:vendorMenu",
             }
         }
-        exports['qr-menu']:openMenu(vendorSettings)
+        exports['rsg-menu']:openMenu(vendorSettings)
     end, currentvendor)
 end)
 
@@ -350,7 +350,7 @@ end)
 
 
 RegisterNetEvent("rsg-vendor:client:vendorGiveBusiness", function()
-    local dialoggive = exports['qr-input']:ShowInput({
+    local dialoggive = exports['rsg-input']:ShowInput({
         header = Lang:t('input.give_market'),
         submitText = Lang:t('input.validate'),
         inputs = {
@@ -366,7 +366,7 @@ end)
 
 RegisterNetEvent("rsg-vendor:client:vendorName", function()
 
-    local ChangeName = exports['qr-input']:ShowInput({
+    local ChangeName = exports['rsg-input']:ShowInput({
         header = Lang:t('input.name'),
         submitText = Lang:t('input.validate'),
         inputs = {
@@ -383,7 +383,7 @@ end)
 RegisterNetEvent("rsg-vendor:client:vendorWithdraw", function(checkmoney)
     local money = checkmoney.money
 
-    local Withdraw = exports['qr-input']:ShowInput({
+    local Withdraw = exports['rsg-input']:ShowInput({
         header = Lang:t('input.withdraw').." : (Max : $"..money..")",
         submitText = Lang:t('input.validate'),
         inputs = {
@@ -402,7 +402,7 @@ RegisterNetEvent("rsg-vendor:client:vendorInvReFillInput", function(data)
     local label = data.label
     local amount = data.amount
 
-    local Refill = exports['qr-input']:ShowInput({
+    local Refill = exports['rsg-input']:ShowInput({
         header = Lang:t('input.refill').." : "..label,
         submitText = Lang:t('input.validate'),
         inputs = {
@@ -422,8 +422,8 @@ RegisterNetEvent("rsg-vendor:client:vendorInvInput", function(data)
     local prix = data.price
     local stock = data.stock
 
-    local howmany = exports['qr-input']:ShowInput({
-        header = Lang:t('input.howmany_buy').." ("..QRCore.Shared.Items[name].label.." | $"..prix.." | Stock: "..stock..")",
+    local howmany = exports['rsg-input']:ShowInput({
+        header = Lang:t('input.howmany_buy').." ("..RSGCore.Shared.Items[name].label.." | $"..prix.." | Stock: "..stock..")",
         submitText = Lang:t('input.validate'),
         inputs = {
             {text = Lang:t('input.qt'), name = "qt", type = "number", isRequired = true, }
@@ -529,7 +529,7 @@ RegisterNetEvent("rsg-vendor:client:vendorRob", function()
     local me = PlayerPedId()
     local isArmed = Citizen.InvokeNative(0xCB690F680A3EA971, me, 4)  --isPedArmed
     if isArmed then
-        QRCore.Functions.TriggerCallback('rsg-vendor:server:vendorS', function(result)
+        RSGCore.Functions.TriggerCallback('rsg-vendor:server:vendorS', function(result)
             if result[1].robbery == 0 then
                 for i, x in pairs(peds) do
                     if HasEntityClearLosToEntityInFront(me, peds[i], 19) and not IsPedDeadOrDying(peds[i]) and GetDistanceBetweenCoords(GetEntityCoords(me), GetEntityCoords(peds[i]), true) <= 4.0 then
@@ -549,7 +549,7 @@ RegisterNetEvent("rsg-vendor:client:vendorRob", function()
                             SetBlockingOfNonTemporaryEvents(peds[i],false)
                             TaskCombatPed(peds[i], PlayerPedId(), 0, 16)
                             Wait(100)
-                            QRCore.Functions.Notify(Lang:t('rob.fail'), 'error')
+                            RSGCore.Functions.Notify(Lang:t('rob.fail'), 'error')
                             Wait(20000)
                             DeletePed(peds[i])
                             Wait(10000)
@@ -562,7 +562,7 @@ RegisterNetEvent("rsg-vendor:client:vendorRob", function()
                             end
                             TaskPlayAnim(peds[i], "script_proc@robberies@homestead@lonnies_shack@deception", "hands_up_loop", 2.0, -2.0, -1, 67109393, 0.0, false, 1245184, false, "UpperbodyFixup_filter", false)
 
-                            QRCore.Functions.Progressbar("robbery", Lang:t('rob.good'), Config.RobTime, false, true, {
+                            RSGCore.Functions.Progressbar("robbery", Lang:t('rob.good'), Config.RobTime, false, true, {
                                 disableMovement = true,
                                 disableCarMovement = false,
                                 disableMouse = false,
@@ -576,11 +576,11 @@ RegisterNetEvent("rsg-vendor:client:vendorRob", function()
                     end
                 end
             else
-                QRCore.Functions.Notify(Lang:t('rob.already'), 'error')
+                RSGCore.Functions.Notify(Lang:t('rob.already'), 'error')
             end
         end, currentvendor)
     else
-        QRCore.Functions.Notify(Lang:t('rob.need_gun'), 'error')
+        RSGCore.Functions.Notify(Lang:t('rob.need_gun'), 'error')
     end
 end)
 
@@ -606,7 +606,7 @@ end)
 
 CreateThread(function()
     for k, v in pairs(Config.Market) do
-        exports['qr-core']:createPrompt(Config.Market[k], Config.Market[k].coords, 0xF3830D8E, Lang:t('other.prompt'), {
+        exports['rsg-core']:createPrompt(Config.Market[k], Config.Market[k].coords, 0xF3830D8E, Lang:t('other.prompt'), {
             type = 'client',
             event = 'rsg-vendor:client:vendorMenuPrompt'
         })
@@ -632,7 +632,7 @@ end)
 --[[
 RegisterNetEvent("rsg-vendor:server:vendorDbInv")
 AddEventHandler("rsg-vendor:server:vendorDbInv", function()
-    QRCore.Functions.GetPlayerData(function(PlayerData)
+    RSGCore.Functions.GetPlayerData(function(PlayerData)
         for k, v in pairs(PlayerData.items) do 
             if PlayerData.items[k] ~= nil and PlayerData.items[k].type == "item" then 
                 print(PlayerData.items[k].name.." - "..PlayerData.items[k].amount)
