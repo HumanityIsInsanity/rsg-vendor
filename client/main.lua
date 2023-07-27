@@ -144,7 +144,6 @@ RegisterNetEvent("rsg-vendor:client:vendorMenu", function()
     end, currentvendor)
 end)
 
-
 RegisterNetEvent("rsg-vendor:client:vendorInv", function(store_inventory, data)
     RSGCore.Functions.TriggerCallback('rsg-vendor:server:vendorS', function(result)
         local vendorMenuItem = {
@@ -177,7 +176,6 @@ RegisterNetEvent("rsg-vendor:client:vendorInv", function(store_inventory, data)
         exports['rsg-menu']:openMenu(vendorMenuItem)
     end, currentvendor)
 end)
-
 
 RegisterNetEvent("rsg-vendor:client:vendorInvReFull", function()
     RSGCore.Functions.GetPlayerData(function(PlayerData)
@@ -212,7 +210,7 @@ RegisterNetEvent("rsg-vendor:client:vendorInvReFull", function()
                     },
                 }
                 for k, v in pairs(PlayerData.items) do
-                --print(PlayerData.items[k].name.." "..PlayerData.items[k].amount)
+					--print(PlayerData.items[k].name.." "..PlayerData.items[k].amount)
                     if PlayerData.items[k].amount > 0 and PlayerData.items[k].type == "item" then
                     vendorMenuInvItem[#vendorMenuInvItem+1] = {
                         header = "<img src=nui://rsg-inventory/html/images/"..PlayerData.items[k].image.." width=20px> ‎ ‎ "..PlayerData.items[k].label,
@@ -237,7 +235,6 @@ RegisterNetEvent("rsg-vendor:client:vendorInvReFull", function()
         end, currentvendor)
     end)
 end)
-
 
 RegisterNetEvent("rsg-vendor:client:vendorCheckMoney", function()
     --print(1)
@@ -276,7 +273,6 @@ RegisterNetEvent("rsg-vendor:client:vendorCheckMoney", function()
     end, currentvendor)
 end)
 
-
 RegisterNetEvent("rsg-vendor:client:vendorAchat", function(currentvendor)
     price = Config.Market[currentvendor].price
     RSGCore.Functions.TriggerCallback('rsg-vendor:server:vendorS', function(result)
@@ -305,7 +301,6 @@ RegisterNetEvent("rsg-vendor:client:vendorAchat", function(currentvendor)
         exports['rsg-menu']:openMenu(vendorAchat)
     end, currentvendor)
 end)
-
 
 RegisterNetEvent("rsg-vendor:client:vendorSettings", function()
     RSGCore.Functions.TriggerCallback('rsg-vendor:server:vendorS', function(result)
@@ -343,11 +338,9 @@ RegisterNetEvent("rsg-vendor:client:vendorSettings", function()
     end, currentvendor)
 end)
 
-
 -------------------------------------------------------------------------------------------
 -- Input
 -------------------------------------------------------------------------------------------
-
 
 RegisterNetEvent("rsg-vendor:client:vendorGiveBusiness", function()
     local dialoggive = exports['rsg-input']:ShowInput({
@@ -363,7 +356,6 @@ RegisterNetEvent("rsg-vendor:client:vendorGiveBusiness", function()
     end
 end)
 
-
 RegisterNetEvent("rsg-vendor:client:vendorName", function()
 
     local ChangeName = exports['rsg-input']:ShowInput({
@@ -378,7 +370,6 @@ RegisterNetEvent("rsg-vendor:client:vendorName", function()
         TriggerServerEvent('rsg-vendor:server:vendorName', currentvendor, ChangeName.name)
     end
 end)
-
 
 RegisterNetEvent("rsg-vendor:client:vendorWithdraw", function(checkmoney)
     local money = checkmoney.money
@@ -396,12 +387,10 @@ RegisterNetEvent("rsg-vendor:client:vendorWithdraw", function(checkmoney)
     end
 end)
 
-
 RegisterNetEvent("rsg-vendor:client:vendorInvReFillInput", function(data)
     local name = data
     local label = data.label
     local amount = data.amount
-
     local Refill = exports['rsg-input']:ShowInput({
         header = Lang:t('input.refill').." : "..label,
         submitText = Lang:t('input.validate'),
@@ -411,11 +400,17 @@ RegisterNetEvent("rsg-vendor:client:vendorInvReFillInput", function(data)
         },
     })
 
-    if Refill ~= nil then 
-        TriggerServerEvent('rsg-vendor:server:vendorInvReFill', currentvendor, name, Refill.qt, Refill.qtp)
-    end
+    RSGCore.Functions.GetPlayerData(function(PlayerData)
+        for k, v in pairs(PlayerData.items) do
+            if amount >= tonumber(Refill.qt) then
+                TriggerServerEvent('rsg-vendor:server:vendorInvReFill', currentvendor, name, Refill.qt, Refill.qtp)
+            else
+                RSGCore.Functions.Notify(("Invalid Amount"), 'error')
+            end
+            return
+        end
+    end)
 end)
-
 
 RegisterNetEvent("rsg-vendor:client:vendorInvInput", function(data)
     local name = data.items
@@ -429,17 +424,16 @@ RegisterNetEvent("rsg-vendor:client:vendorInvInput", function(data)
             {text = Lang:t('input.qt'), name = "qt", type = "number", isRequired = true, }
         },
     })
-
-    if howmany ~= nil then 
+    if stock >= tonumber(howmany.qt) then
         TriggerServerEvent('rsg-vendor:server:vendorPurchaseItem', currentvendor, name, howmany.qt)
+    else
+        RSGCore.Functions.Notify(("Invalid Amount"), 'error')
     end
 end)
-
 
 -------------------------------------------------------------------------------------------
 -- Event
 -------------------------------------------------------------------------------------------
-
 
 RegisterNetEvent("rsg-vendor:client:vendorBuyEtal")
 AddEventHandler("rsg-vendor:client:vendorBuyEtal", function()
@@ -448,7 +442,6 @@ AddEventHandler("rsg-vendor:client:vendorBuyEtal", function()
     TriggerServerEvent('rsg-vendor:server:vendorBuyEtal', currentvendor, price)
 end)
 
-
 RegisterNetEvent("Stores:ReturnStoreItems")
 AddEventHandler("Stores:ReturnStoreItems", function(data, data2)
     store_inventory = data
@@ -456,31 +449,23 @@ AddEventHandler("Stores:ReturnStoreItems", function(data, data2)
     TriggerEvent('rsg-vendor:client:vendorInv', store_inventory, data2)
 end)
 
-
-
-
-
 -------------------------------------------------------------------------------------------
 -- NPC
 -------------------------------------------------------------------------------------------
-
 
 function SET_PED_RELATIONSHIP_GROUP_HASH ( iVar0, iParam0 )
     return Citizen.InvokeNative( 0xC80A74AC829DDD92, iVar0, _GET_DEFAULT_RELATIONSHIP_GROUP_HASH( iParam0 ) )
 end
 
-
 function _GET_DEFAULT_RELATIONSHIP_GROUP_HASH ( iParam0 )
     return Citizen.InvokeNative( 0x3CC4A718C258BDD0 , iParam0 );
 end
-
 
 function modelrequest( model )
     Citizen.CreateThread(function()
         RequestModel( model )
     end)
 end
-
 
 function RandomPed ()
     return Config.Model[math.random(1, #Config.Model)]
@@ -519,11 +504,9 @@ function _CreatePed(coords, heading)
     return npc
 end
 
-
 -------------------------------------------------------------------------------------------
 -- ROBBERY
 -------------------------------------------------------------------------------------------
-
 
 RegisterNetEvent("rsg-vendor:client:vendorRob", function()
     local me = PlayerPedId()
@@ -588,7 +571,6 @@ end)
 -- Blips
 -------------------------------------------------------------------------------------------
 
-
 Citizen.CreateThread(function()
     for z, x in pairs(Config.Market) do
         local blip = N_0x554d9d53f696d002(1664425300, Config.Market[z].coords)
@@ -598,11 +580,9 @@ Citizen.CreateThread(function()
     end  
 end)
 
-
 -------------------------------------------------------------------------------------------
 -- Prompt
 -------------------------------------------------------------------------------------------
-
 
 CreateThread(function()
     for k, v in pairs(Config.Market) do
@@ -624,7 +604,6 @@ RegisterNetEvent('rsg-vendor:client:vendorMenuPrompt', function()
         end
     end
 end)
-
 
 -------------------------------------------------------------------------------------------
 -- Debug
